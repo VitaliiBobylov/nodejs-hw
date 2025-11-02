@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
 import 'dotenv/config';
+import { connectMongoDB } from './db/connectMongoDB.js';
 
 const app = express();
 
@@ -26,8 +27,9 @@ app.use(
   }),
 );
 
-app.get('/notes', (req, res) => {
-  res.status(200).json({ message: 'Retrieved all notes' });
+app.get('/notes', async (req, res) => {
+  const Notes = await Notes.find();
+  res.status(200).json(Notes);
 });
 
 app.get('/notes/:noteId', (req, res) => {
@@ -38,10 +40,6 @@ app.get('/notes/:noteId', (req, res) => {
 
 app.get('/', (req, res) => {
   res.status(200).json({ message: 'Hello, World!' });
-});
-
-app.get('/test-error', (req, res) => {
-  throw new Error('Simulated server error');
 });
 
 // error
@@ -56,6 +54,8 @@ app.use((err, req, res, next) => {
     error: err.message,
   });
 });
+
+await connectMongoDB();
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
