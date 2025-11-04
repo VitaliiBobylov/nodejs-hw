@@ -44,3 +44,5 @@ const notesSchema = new Schema(
 );
 
 export const Notes = model('Notes', notesSchema);
+
+export default Notes;
