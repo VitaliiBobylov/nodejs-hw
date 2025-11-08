@@ -1,13 +1,9 @@
-// src/middleware/errorHandler.js
-
 export function errorHandler(err, req, res, next) {
   console.error(err);
 
-  const isProd = process.env.NODE_ENV === 'production';
+  const status = err.status || 500;
+  const message =
+    process.env.NODE_ENV === 'production' ? 'Server error' : err.message;
 
-  res.status(500).json({
-    message: isProd ? '{повідомлення про помилку}' : err.message,
-  });
+  res.status(status).json({ message });
 }
-
-export default errorHandler;

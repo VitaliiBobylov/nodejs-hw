@@ -1,21 +1,27 @@
-// src/routes/studentsRoutes.js
-
 import { Router } from 'express';
 import {
   getAllNotes,
-  getNotesById,
-  createNotes,
-  updateNotesById,
+  getNoteById,
+  createNote,
+  updateNote,
+  deleteNote,
 } from '../controllers/notesController.js';
 
 const router = Router();
 
-router.get('/notes', getAllNotes);
+// GET /notes
+router.get('/', getAllNotes);
 
-router.get('/notes/:noteId', getNotesById);
+// GET /notes/:noteId
+router.get('/:noteId', getNoteById);
 
-router.post('/notes', createNotes);
+// POST /notes
+router.post('/', createNote);
 
-router.put('/notes/:noteId', updateNotesById);
+// PATCH /notes/:noteId
+router.patch('/:noteId', updateNote);
+
+// DELETE /notes/:noteId
+router.delete('/:noteId', deleteNote);
 
 export default router;
