@@ -36,5 +36,5 @@ const noteSchema = new Schema(
   },
 );
 
-export const Notes = model('Notes', noteSchema);
-export default Notes;
+export const Note = model('Note', noteSchema);
+export default Note;

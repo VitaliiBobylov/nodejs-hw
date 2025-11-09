@@ -2,13 +2,9 @@ import Notes from '../models/note.js';
 import createHttpError from 'http-errors';
 
 // GET /notes
-export const getAllNotes = async (req, res, next) => {
-  try {
-    const notes = await Notes.find();
-    res.status(200).json(notes);
-  } catch (error) {
-    next(error);
-  }
+export const getAllNotes = async (req, res) => {
+  const notes = await Notes.find();
+  res.status(200).json(notes);
 };
 
 // GET /notes/:noteId
