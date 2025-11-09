@@ -1,9 +1,22 @@
+// errorHandler.js
+
+import { HttpError } from 'http-errors';
+
 export function errorHandler(err, req, res, next) {
   console.error(err);
 
-  const status = err.status || 500;
-  const message =
-    process.env.NODE_ENV === 'production' ? 'Server error' : err.message;
+  if (err instanceof HttpError) {
+    return res.status(err.status).json({
+      message: err.message || err.name,
+    });
+  }
 
-  res.status(status).json({ message });
+  const message =
+    process.env.NODE_ENV === 'production'
+      ? 'Server error'
+      : err.message || 'Unexpected error';
+
+  res.status(500).json({ message });
 }
+
+export default errorHandler;
