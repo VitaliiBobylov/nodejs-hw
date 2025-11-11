@@ -10,18 +10,18 @@ import {
 const router = Router();
 
 // GET /notes
-router.get('/note', getAllNotes);
+router.get('/notes', getAllNotes);
 
 // GET /notes/:noteId
-router.get('/note/:noteId', getNoteById);
+router.get('/notes/:noteId', getNoteById);
 
 // POST /notes
-router.post('/note', createNote);
+router.post('/notes', createNote);
 
 // PATCH /notes/:noteId
-router.patch('/note/:noteId', updateNote);
+router.patch('/notes/:noteId', updateNote);
 
 // DELETE /notes/:noteId
-router.delete('/note/:noteId', deleteNote);
+router.delete('/notes/:noteId', deleteNote);
 
 export default router;
