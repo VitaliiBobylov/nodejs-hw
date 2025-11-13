@@ -6,10 +6,31 @@ import {
   updateNote,
   deleteNote,
 } from '../controllers/notesController.js';
+import {
+  getAllNotesSchema,
+  noteIdSchema,
+  createNoteSchema,
+  updateNoteSchema,
+} from '../validations/notesValidation.js';
 
 const router = Router();
 
 // GET /notes
+
+router.get('/notes', getAllNotesSchema, getAllNotes);
+
+// GET /notes/:noteId
+router.get('/notes/:noteId', noteIdSchema, getNoteById);
+
+// POST /notes
+router.post('/notes', createNoteSchema, createNote);
+
+// PATCH /notes/:noteId
+router.patch('/notes/:noteId', updateNoteSchema, updateNote);
+
+// DELETE /notes/:noteId
+router.delete('/notes/:noteId', noteIdSchema, deleteNote);
+
 router.get('/notes', getAllNotes);
 
 // GET /notes/:noteId
@@ -23,5 +44,6 @@ router.patch('/notes/:noteId', updateNote);
 
 // DELETE /notes/:noteId
 router.delete('/notes/:noteId', deleteNote);
+
 
 export default router;

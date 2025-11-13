@@ -2,9 +2,32 @@ import Notes from '../models/note.js';
 import createHttpError from 'http-errors';
 
 // GET /note
+
 export const getAllNotes = async (req, res) => {
-  const notes = await Notes.find();
-  res.status(200).json(notes);
+  const { tag, search } = req.query;
+  const page = parseInt(req.query.page, 10) || 1;
+  const perPage = parseInt(req.query.perPage, 10) || 10;
+  const filter = {};
+  if (tag) {
+    filter.tag = tag;
+  }
+  if (search) {
+    filter.$text = { $search: search };
+  }
+
+  const totalNotes = await Notes.countDocuments(filter);
+  const totalPages = Math.ceil(totalNotes / perPage);
+  const notes = await Notes.find(filter)
+    .skip((page - 1) * perPage)
+    .limit(perPage);
+
+  res.status(200).json({
+    page,
+    perPage,
+    totalNotes,
+    totalPages,
+    notes,
+  });
 };
 
 // GET /note/:noteId
