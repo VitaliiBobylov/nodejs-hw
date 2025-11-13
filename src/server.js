@@ -1,4 +1,3 @@
-// src/server.js
 import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
@@ -7,9 +6,10 @@ import { errorHandler } from './middleware/errorHandler.js';
 import { logger } from './middleware/logger.js';
 import notFoundHandler from './middleware/notFoundHandler.js';
 import notesRouter from './routes/notesRoutes.js';
+import { errors as celebrateErrors } from 'celebrate';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3030;
 
 app.use(logger);
 app.use(express.json());
@@ -21,6 +21,8 @@ app.get('/', (req, res) => {
 });
 
 app.use(notFoundHandler);
+
+app.use(celebrateErrors());
 
 app.use(errorHandler);
 

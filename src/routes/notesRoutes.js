@@ -6,22 +6,28 @@ import {
   updateNote,
   deleteNote,
 } from '../controllers/notesController.js';
+import {
+  getAllNotesSchema,
+  noteIdSchema,
+  createNoteSchema,
+  updateNoteSchema,
+} from '../validations/notesValidation.js';
 
 const router = Router();
 
 // GET /notes
-router.get('/note', getAllNotes);
+router.get('/notes', getAllNotesSchema, getAllNotes);
 
 // GET /notes/:noteId
-router.get('/note/:noteId', getNoteById);
+router.get('/notes/:noteId', noteIdSchema, getNoteById);
 
 // POST /notes
-router.post('/note', createNote);
+router.post('/notes', createNoteSchema, createNote);
 
 // PATCH /notes/:noteId
-router.patch('/note/:noteId', updateNote);
+router.patch('/notes/:noteId', updateNoteSchema, updateNote);
 
 // DELETE /notes/:noteId
-router.delete('/note/:noteId', deleteNote);
+router.delete('/notes/:noteId', noteIdSchema, deleteNote);
 
 export default router;
