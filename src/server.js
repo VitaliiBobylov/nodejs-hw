@@ -16,10 +16,6 @@ app.use(express.json());
 app.use(cors());
 app.use(notesRouter);
 
-app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Welcome to Notes API' });
-});
-
 app.use(notFoundHandler);
 
 app.use(celebrateErrors());
