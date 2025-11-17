@@ -1,4 +1,3 @@
-// src/controllers/authController.js
 import Session from '../models/session.js';
 
 export const logoutUser = async (req, res) => {

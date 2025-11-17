@@ -1,5 +1,3 @@
-// src/models/user.js
-
 import { model, Schema } from 'mongoose';
 
 const userSchema = new Schema(
@@ -7,6 +5,7 @@ const userSchema = new Schema(
     username: {
       type: String,
       trim: true,
+      default: null,
     },
     email: {
       type: String,
@@ -24,9 +23,9 @@ const userSchema = new Schema(
 );
 
 userSchema.methods.toJSON = function () {
-  const userObject = this.toObject();
-  delete userObject.password;
-  return userObject;
+  const user = this.toObject();
+  delete user.password;
+  return user;
 };
 
 userSchema.pre('save', function (next) {
@@ -36,6 +35,5 @@ userSchema.pre('save', function (next) {
   next();
 });
 
-const User = model('User', userSchema);
-
+export const User = model('User', userSchema);
 export default User;

@@ -1,5 +1,3 @@
-// src/routes/authRoutes.js
-
 import { Router } from 'express';
 import { celebrate } from 'celebrate';
 import { registerUser } from '../controllers/authController.js';
