@@ -7,7 +7,7 @@ const noteSchema = new Schema(
   {
     title: {
       type: String,
-      required: true,
+      required: [true, 'Title is required'],
       trim: true,
     },
     content: {
@@ -20,6 +20,12 @@ const noteSchema = new Schema(
       enum: TAGS,
       default: 'Todo',
     },
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'User ID is required'],
+      index: true,
+    },
   },
   {
     timestamps: true,
@@ -27,5 +33,8 @@ const noteSchema = new Schema(
 );
 
 noteSchema.index({ title: 'text', content: 'text' });
+noteSchema.index({ userId: 1, createdAt: -1 });
+
 const Note = model('Note', noteSchema);
+
 export default Note;
