@@ -18,11 +18,6 @@ export const registerUserSchema = {
       'string.min': 'Password must be at least 8 characters long',
       'any.required': 'Password is required',
     }),
-
-    username: Joi.string().trim().min(2).max(30).optional().messages({
-      'string.min': 'Username must be at least 2 characters long',
-      'string.max': 'Username cannot exceed 30 characters',
-    }),
   }),
 };
 
