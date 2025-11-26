@@ -102,3 +102,18 @@ export const logoutUser = async (req, res) => {
 
   res.status(204).send();
 };
+
+
+
+
+export const requestResetEmail = async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw createHttpError(404, 'User with this email does not exist');
+  }
+	res.status(200).json({
+		message: 'Password reset email sent successfully'
+	});
+};
