@@ -14,6 +14,8 @@ import { errors as celebrateErrors } from 'celebrate';
 import authRouter from './routes/authRoutes.js';
 import notesRouter from './routes/notesRoutes.js';
 
+import userRoutes from './routes/userRoutes.js';
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -26,9 +28,14 @@ app.use(cors({ origin: true, credentials: true }));
 // Routes
 app.use(authRouter);
 app.use(notesRouter);
+app.use(userRoutes);
+
+
 app.use(notFoundHandler);
 app.use(celebrateErrors());
 app.use(errorHandler);
+
+
 
 await connectMongoDB();
 
