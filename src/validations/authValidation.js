@@ -1,5 +1,3 @@
-// src/validations/authValidation.js
-
 import { Joi, Segments } from 'celebrate';
 
 export const registerUserSchema = {
@@ -32,9 +30,20 @@ export const loginUserSchema = {
   }),
 };
 
-
 export const requestResetEmailSchema = {
   [Segments.BODY]: Joi.object({
     email: Joi.string().email().required(),
+  }),
+};
+
+export const resetPasswordSchema = {
+  [Segments.BODY]: Joi.object({
+    token: Joi.string().required().messages({
+      'any.required': 'Token is required',
+    }),
+    password: Joi.string().min(8).required().messages({
+      'string.min': 'Password must be at least 8 characters long',
+      'any.required': 'Password is required',
+    }),
   }),
 };
