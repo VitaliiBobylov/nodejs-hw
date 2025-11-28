@@ -1,3 +1,5 @@
+// src/validations/authValidation.js
+
 import { Joi, Segments } from 'celebrate';
 
 export const registerUserSchema = {
@@ -11,7 +13,6 @@ export const registerUserSchema = {
         'string.email': 'Email must be a valid email address',
         'any.required': 'Email is required',
       }),
-
     password: Joi.string().min(8).max(100).required().messages({
       'string.min': 'Password must be at least 8 characters long',
       'any.required': 'Password is required',
