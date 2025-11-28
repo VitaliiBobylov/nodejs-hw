@@ -1,3 +1,5 @@
+// src/routes/authRoutes.js
+
 import { Router } from 'express';
 import { celebrate } from 'celebrate';
 
@@ -7,14 +9,14 @@ import {
   logoutUser,
   refreshUserSession,
   requestResetEmail,
-  resetPassword
+  resetPassword,
 } from '../controllers/authController.js';
 
 import {
   registerUserSchema,
   loginUserSchema,
   requestResetEmailSchema,
-  resetPasswordSchema
+  resetPasswordSchema,
 } from '../validations/authValidation.js';
 
 const router = Router();
