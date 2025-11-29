@@ -23,19 +23,22 @@ const PORT = process.env.PORT || 3000;
 app.use(logger);
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: true, credentials: true }));
+
+app.use(
+  cors({
+    origin: process.env.FRONTEND_DOMAIN,
+    credentials: true,
+  }),
+);
 
 // Routes
 app.use(authRouter);
 app.use(notesRouter);
 app.use(userRoutes);
 
-
 app.use(notFoundHandler);
 app.use(celebrateErrors());
 app.use(errorHandler);
-
-
 
 await connectMongoDB();
 

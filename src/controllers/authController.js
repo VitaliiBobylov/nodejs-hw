@@ -23,13 +23,16 @@ export const registerUser = async (req, res, next) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = await User.create({ email, password: hashedPassword });
+    const user = await User.create({
+      email,
+      password: hashedPassword,
+    });
 
     const session = await createSession(user._id);
     setSessionCookies(res, session);
-
     res.status(201).json(user);
   } catch (err) {
+    if (err.status) return next(err);
     next(createHttpError(500, 'Registration failed'));
   }
 };
@@ -39,7 +42,6 @@ export const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-
     if (!user) {
       throw createHttpError(401, 'Invalid credentials');
     }
@@ -48,14 +50,13 @@ export const loginUser = async (req, res, next) => {
     if (!isPasswordValid) {
       throw createHttpError(401, 'Invalid credentials');
     }
-
     await Session.deleteMany({ userId: user._id });
 
     const session = await createSession(user._id);
     setSessionCookies(res, session);
-
     res.status(200).json(user);
   } catch (err) {
+    if (err.status) return next(err);
     next(createHttpError(500, 'Login failed'));
   }
 };
@@ -63,8 +64,7 @@ export const loginUser = async (req, res, next) => {
 // POST /auth/logout
 export const logoutUser = async (req, res, next) => {
   try {
-    const { sessionId } = req.cookies || {};
-
+    const { sessionId } = req.cookies;
     if (sessionId) {
       await Session.deleteOne({ _id: sessionId });
     }
@@ -72,9 +72,8 @@ export const logoutUser = async (req, res, next) => {
     res.clearCookie('sessionId');
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
-
     res.status(204).send();
-  } catch (err) {
+  } catch {
     next(createHttpError(500, 'Logout failed'));
   }
 };
@@ -82,8 +81,7 @@ export const logoutUser = async (req, res, next) => {
 // POST /auth/refresh
 export const refreshUserSession = async (req, res, next) => {
   try {
-    const { sessionId, refreshToken } = req.cookies || {};
-
+    const { sessionId, refreshToken } = req.cookies;
     if (!sessionId || !refreshToken) {
       throw createHttpError(401, 'Session not found');
     }
@@ -97,14 +95,13 @@ export const refreshUserSession = async (req, res, next) => {
     if (isExpired) {
       throw createHttpError(401, 'Session token expired');
     }
-
     await Session.deleteOne({ _id: session._id });
 
     const newSession = await createSession(session.userId);
     setSessionCookies(res, newSession);
-
     res.status(200).json({ message: 'Session refreshed' });
   } catch (err) {
+    if (err.status) return next(err);
     next(createHttpError(500, 'Session refresh failed'));
   }
 };
@@ -113,25 +110,28 @@ export const refreshUserSession = async (req, res, next) => {
 export const requestResetEmail = async (req, res, next) => {
   try {
     const { email } = req.body;
-
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(200).json({ message: 'Password reset email sent successfully' });
+      return res.status(200).json({
+        message: 'Password reset email sent successfully',
+      });
     }
 
     const token = jwt.sign(
       { sub: user._id.toString(), email: user.email },
       process.env.JWT_SECRET,
-      { expiresIn: '15m' }
+      { expiresIn: '15m' },
     );
 
     const resetLink = `${process.env.FRONTEND_DOMAIN}/reset-password?token=${token}`;
-
     const templatePath = 'src/templates/reset-password-email.html';
-    const templateSource = await fs.readFile(templatePath, 'utf8');
-    const template = handlebars.compile(templateSource);
+    const source = await fs.readFile(templatePath, 'utf8');
+    const template = handlebars.compile(source);
 
-    const html = template({ name: user.name || 'User', resetLink });
+    const html = template({
+      name: user.username || 'User',
+      resetLink,
+    });
 
     await sendEmail({
       from: process.env.SMTP_FROM,
@@ -140,9 +140,13 @@ export const requestResetEmail = async (req, res, next) => {
       html,
     });
 
-    return res.status(200).json({ message: 'Password reset email sent successfully' });
-  } catch (err) {
-    next(createHttpError(500, 'Failed to send the email, please try again later.'));
+    return res.status(200).json({
+      message: 'Password reset email sent successfully',
+    });
+  } catch {
+    next(
+      createHttpError(500, 'Failed to send the email, please try again later.'),
+    );
   }
 };
 
@@ -158,8 +162,11 @@ export const resetPassword = async (req, res, next) => {
       throw createHttpError(401, 'Invalid or expired token');
     }
 
-    const { sub: userId, email } = decoded;
-    const user = await User.findOne({ _id: userId, email });
+    const user = await User.findOne({
+      _id: decoded.sub,
+      email: decoded.email,
+    });
+
     if (!user) {
       throw createHttpError(404, 'User not found');
     }
@@ -167,7 +174,9 @@ export const resetPassword = async (req, res, next) => {
     user.password = await bcrypt.hash(password, 10);
     await user.save();
 
-    res.status(200).json({ message: 'Password reset successfully' });
+    res.status(200).json({
+      message: 'Password reset successfully',
+    });
   } catch (err) {
     next(err);
   }

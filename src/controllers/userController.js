@@ -9,13 +9,14 @@ export const updateUserAvatar = async (req, res, next) => {
     }
     const uploaded = await saveFileToCloudinary(req.file.buffer);
 
-
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      throw createHttpError(404, 'User not found');
+    }
     user.avatar = uploaded.secure_url;
     await user.save();
 
-    res.status(200).json({ url: uploaded.secure_url });
-
+    res.status(200).json({ url: user.avatar });
   } catch (err) {
     next(err);
   }
